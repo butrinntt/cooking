@@ -39,12 +39,22 @@ export default function Home() {
     fetchFeaturedRecipes();
   }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/recipes?search=${encodeURIComponent(searchQuery)}`);
-    }
-  };
+  const handleSearch = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (!searchQuery.trim()) return;
+
+  const { data: recipes, error } = await supabase
+    .from("recipes")
+    .select("id")
+    .ilike("title", `%${searchQuery}%`);
+
+  if (recipes && recipes.length > 0) {
+    router.push(`/recipes?search=${encodeURIComponent(searchQuery)}`);
+  } else {
+    alert("No recipes found matching your search.");
+  }
+};
 
   return (
     <main className="min-h-screen bg-background">

@@ -36,6 +36,8 @@ export default function RecipesPage() {
   const [difficulty, setDifficulty] = useState<string>("");
   const [caloriesRange, setCaloriesRange] = useState([0, 5000]);
   const [proteinRange, setProteinRange] = useState([0, 500]);
+  const [urlSearchUsed, setUrlSearchUsed] = useState(false);
+  const [loading, setLoading] = useState(true); // New loading state
   const supabase = createClient();
   const searchParams = useSearchParams();
 
@@ -70,28 +72,25 @@ export default function RecipesPage() {
     }
   };
 
-  // Handle initial load with URL search
   useEffect(() => {
     const urlSearch = searchParams.get("search");
-    if (urlSearch) {
+    if (urlSearch && !urlSearchUsed) {
+      setUrlSearchUsed(true);
       setSearchQuery(urlSearch);
+      setLoading(false); // Set loading to false after updating the search query
     }
-  }, [searchParams]);
+  }, [searchParams, urlSearchUsed]);
 
-  async function searchQueryUpdate(searchQuery: string) {
-    await setSearchQuery(searchQuery);
-  }
-
-  // Fetch recipes whenever filters change
   useEffect(() => {
-    const urlSearch = searchParams.get("search");
-    searchQueryUpdate(urlSearch ?? "");
-    fetchRecipes();
-  }, [searchParams, searchQuery, difficulty, caloriesRange, proteinRange]);
+    if (!loading) {
+      console.log("Updated searchQuery:", searchQuery);
+      fetchRecipes();
+    }
+  }, [searchQuery, difficulty, caloriesRange, proteinRange, loading]);
 
   return (
     <main className="min-h-screen py-12 bg-muted/30">
-      <div className="container">
+      <div className="container mx-auto">
         <div className="flex flex-col md:flex-row gap-8">
           <aside className="w-full md:w-64 space-y-6">
             <Card>
@@ -142,6 +141,7 @@ export default function RecipesPage() {
                     value={[caloriesRange[0], caloriesRange[1]]}
                     onValueChange={(value) => {
                       setCaloriesRange([value[0], value[1]]);
+                      console.log(caloriesRange);
                     }}
                     className="mt-2"
                   />
@@ -175,9 +175,9 @@ export default function RecipesPage() {
 
           {/* Recipe Grid */}
           <div className="flex-1">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[35%] gap-6">
               {recipes.map((recipe) => (
-                <Link href={`/recipes/${recipe.id}`} key={recipe.id}>
+                <Link href={`/${recipe.id}`} key={recipe.id}>
                   <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
                     <div className="aspect-video relative">
                       <img
@@ -204,6 +204,12 @@ export default function RecipesPage() {
                           <span>{recipe.cooking_time} mins</span>
                         </div>
                         <span className="capitalize">{recipe.difficulty}</span>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground mt-7">
+                        <span className="capitalize">Calories: {recipe.calories}</span>
+                        <span>Protein: {recipe.protein} g</span>
+                        <span>Carbs: {recipe.carbs} g</span>
+                        <span>Fat: {recipe.fat} g</span>
                       </div>
                     </CardContent>
                   </Card>
