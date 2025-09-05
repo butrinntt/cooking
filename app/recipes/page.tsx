@@ -37,7 +37,6 @@ export default function RecipesPage() {
   const [caloriesRange, setCaloriesRange] = useState([0, 5000]);
   const [proteinRange, setProteinRange] = useState([0, 500]);
   const [urlSearchUsed, setUrlSearchUsed] = useState(false);
-  const [loading, setLoading] = useState(true); // New loading state
   const supabase = createClient();
   const searchParams = useSearchParams();
 
@@ -77,16 +76,13 @@ export default function RecipesPage() {
     if (urlSearch && !urlSearchUsed) {
       setUrlSearchUsed(true);
       setSearchQuery(urlSearch);
-      setLoading(false); // Set loading to false after updating the search query
     }
   }, [searchParams, urlSearchUsed]);
 
   useEffect(() => {
-    console.log(loading);
-
     console.log("Updated searchQuery:", searchQuery);
     fetchRecipes();
-  }, [searchQuery, difficulty, caloriesRange, proteinRange, loading]);
+  }, [searchQuery, difficulty, caloriesRange, proteinRange]);
 
   return (
     <main className="min-h-screen py-12 bg-muted/30">
@@ -175,7 +171,7 @@ export default function RecipesPage() {
 
           {/* Recipe Grid */}
           <div className="flex-1">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[35%] gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {recipes.map((recipe) => (
                 <Link href={`/${recipe.id}`} key={recipe.id}>
                   <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
