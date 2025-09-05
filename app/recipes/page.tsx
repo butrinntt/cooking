@@ -82,10 +82,10 @@ export default function RecipesPage() {
   }, [searchParams, urlSearchUsed]);
 
   useEffect(() => {
-    if (!loading) {
-      console.log("Updated searchQuery:", searchQuery);
-      fetchRecipes();
-    }
+    console.log(loading);
+
+    console.log("Updated searchQuery:", searchQuery);
+    fetchRecipes();
   }, [searchQuery, difficulty, caloriesRange, proteinRange, loading]);
 
   return (
@@ -206,7 +206,9 @@ export default function RecipesPage() {
                         <span className="capitalize">{recipe.difficulty}</span>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground mt-7">
-                        <span className="capitalize">Calories: {recipe.calories}</span>
+                        <span className="capitalize">
+                          Calories: {recipe.calories}
+                        </span>
                         <span>Protein: {recipe.protein} g</span>
                         <span>Carbs: {recipe.carbs} g</span>
                         <span>Fat: {recipe.fat} g</span>

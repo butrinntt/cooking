@@ -121,7 +121,7 @@ export default function NewRecipe() {
       description: "Recipe created successfully",
     });
 
-    router.push(`/recipes/${recipe.id}`);
+    router.push(`/${recipe.id}`);
   };
 
   return (

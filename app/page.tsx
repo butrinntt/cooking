@@ -155,7 +155,7 @@ export default function Home() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredRecipes.map((recipe) => (
-              <Link href={`/recipes/${recipe.id}`} key={recipe.id}>
+              <Link href={`/${recipe.id}`} key={recipe.id}>
                 <Card className="overflow-hidden hover:shadow-lg transition-shadow">
                   <div className="aspect-video relative">
                     <img 
